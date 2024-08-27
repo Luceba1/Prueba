@@ -1,4 +1,4 @@
 "Proyecto grupal" 
-"A¤adiendo cositas a la rama nueva-funcionalidad." 
-"Modificaci¢n en la rama principal." 
-"Modificaci¢n en la rama secundaria." 
+"Aï¿½adiendo cositas a la rama nueva-funcionalidad y master." 
+"Modificaciï¿½n en la rama principal." 
+"Modificaciï¿½n en la rama secundaria." 
