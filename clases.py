@@ -119,3 +119,68 @@ class Radiacion(Mutador):
         else:
             raise ValueError("La mutación se desbordaría de la matriz.")
         return matriz
+
+
+class Virus(Mutador):
+    """
+    Clase para mutaciones de ADN por virus (diagonal).
+    """
+    def crear_mutante(self, matriz: List[List[str]], posicion: Tuple[int, int]) -> List[List[str]]:
+        """
+        Aplica una mutación de virus en la matriz de ADN.
+
+        Args:
+            matriz (List[List[str]]): Matriz de ADN.
+            posicion (Tuple[int, int]): Posición inicial de la mutación.
+
+        Returns:
+            List[List[str]]: Matriz de ADN mutada.
+        """
+        fila, columna = posicion
+        if fila + self.longitud_mutacion <= len(matriz) and columna + self.longitud_mutacion <= len(matriz[0]):
+            for i in range(self.longitud_mutacion):
+                matriz[fila + i][columna + i] = self.base_nitrogenada
+        else:
+            raise ValueError("La mutación se desbordaría de la matriz.")
+        return matriz
+
+
+class Sanador:
+    """
+    Clase para sanar mutaciones en una matriz de ADN.
+    """
+    def __init__(self, matriz: List[List[str]]):
+        """
+        Inicializa el sanador con la matriz original.
+        """
+        self.matriz_original = matriz
+
+    def sanar_mutantes(self, matriz: List[List[str]]) -> Tuple[List[List[str]], bool]:
+        """
+        Sana una matriz de ADN generando una nueva sin mutantes.
+        Si la matriz ya está sana, no realiza cambios.
+
+        Args:
+            matriz (List[List[str]]): Matriz de ADN a sanar.
+
+        Returns:
+            Tuple[List[List[str]], bool]: Matriz de ADN (nueva o la misma) y un booleano indicando si se realizaron cambios.
+        """
+        detector = Detector(matriz)
+        if not detector.detectar_mutantes():
+            return matriz, False  # La matriz ya está sana
+
+        try:
+            nueva_matriz = [
+                [random.choice("ATCG") for _ in range(len(matriz[0]))]
+                for _ in range(len(matriz))
+            ]
+            while Detector(nueva_matriz).detectar_mutantes():
+                nueva_matriz = [
+                    [random.choice("ATCG") for _ in range(len(matriz[0]))]
+                    for _ in range(len(matriz))
+                ]
+            return nueva_matriz, True  # La matriz fue sanada
+        except Exception as e:
+            print(f"Error al sanar la matriz: {e}")
+            return matriz, False
