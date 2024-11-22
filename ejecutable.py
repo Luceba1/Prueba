@@ -87,3 +87,82 @@ def imprimir_resultado(booleano: bool, mensaje: str) -> None:
     """
     print(f"\nResultado booleano: {booleano}")
     print(mensaje)
+
+
+def main() -> None:
+    """
+    Función principal del programa.
+    """
+    matriz = ingresar_matriz()
+    mostrar_matriz(matriz)
+
+    opciones = {
+        "1": "Detectar mutaciones",
+        "2": "Crear mutantes",
+        "3": "Sanar ADN",
+        "4": "Ingresar una nueva matriz",
+        "5": "Salir",
+    }
+
+    while True:
+        print("\nOpciones:")
+        for key, val in opciones.items():
+            print(f"{key}. {val}")
+        opcion = input("\nSeleccione una opción: ").strip()
+
+        if opcion == "1":
+            detector = Detector(matriz)
+            resultado = detector.detectar_mutantes()
+            print(f"\nResultado booleano: {resultado}")
+            if resultado:
+                print("Mutaciones detectadas en las siguientes posiciones:")
+                for fila, columna, tipo in detector.posiciones_mutaciones:
+                    print(f"- Fila: {fila}, Columna: {columna}, Tipo: {tipo}")
+            else:
+                print("No se detectaron mutaciones.")
+
+        elif opcion == "2":
+            base = validar_base_nitrogenada()
+            while True:
+                fila = pedir_entero("Fila inicial (0-5): ", 0, 5)
+                columna = pedir_entero("Columna inicial (0-5): ", 0, 5)
+                tipo = validar_tipo_mutacion()
+                try:
+                    if tipo in ["H", "V"]:
+                        radiacion = Radiacion(base, 4, tipo)
+                        matriz = radiacion.crear_mutante(matriz, (fila, columna), tipo)
+                    elif tipo == "D":
+                        virus = Virus(base, 4, "Diagonal")
+                        matriz = virus.crear_mutante(matriz, (fila, columna))
+                    print("\nMATRIZ MUTADA:")
+                    break
+                except ValueError as e:
+                    print(f"Error: {e}. Intente nuevamente.")
+
+        elif opcion == "3":
+            sanador = Sanador(matriz)
+            matriz_sanada, cambios_realizados = sanador.sanar_mutantes(matriz)
+            if cambios_realizados:
+                print("\nLa matriz ha sido sanada correctamente.")
+            else:
+                print("\nLa matriz ya estaba sana. No se realizaron cambios.")
+            matriz = matriz_sanada
+
+        elif opcion == "4":
+            matriz = ingresar_matriz()
+            print("\nNueva matriz ingresada:")
+            mostrar_matriz(matriz)
+
+        elif opcion == "5":
+            print("\nSaliendo...")
+            break
+
+        else:
+            print("Opción inválida. Intente nuevamente.")
+
+        if opcion != "4":  # Evitar duplicar la matriz tras ingreso
+            mostrar_matriz(matriz)
+
+
+if __name__ == "__main__":
+    main()
